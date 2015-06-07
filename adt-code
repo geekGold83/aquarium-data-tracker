@@ -1,0 +1,313 @@
+* Author: Jerry Orbe
+ * 
+ * About: This simple program will provide the user with input fields which,
+ * when filled in and saved, will either append the information the user input 
+ * to an existing file or allow the user to create a new file and save it 
+ * anywhere on their computer.
+ * 
+	
+	License:
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+    
+ *   
+ * Copyright (C) 2015
+ */
+
+
+import javax.swing.*;
+import javax.swing.border.Border;
+import javax.swing.border.EmptyBorder;
+
+import java.awt.*;
+import java.awt.event.*;
+import java.util.*;
+import java.io.*;
+import java.net.*;
+
+
+public class reefData extends JFrame
+{
+
+
+    ///// Declare JFrame components \\\\\
+    JButton saveB, clearB, exitB;
+    JTextField ammoniaTF, nitriteTF, nitrateTF, phTF, tempTF, saltTF, calcTF, phosTF;
+    JLabel ammoniaL, nitriteL, nitrateL, phL, tempL, saltL, calcL, phosL, linkL;
+    JPanel jp, jp2, jp3;
+
+
+
+    //private SaveButtonHandler pbHandler;
+    private ClearButtonHandler clearBHandler;
+    private ExitButtonHandler ebHandler;
+    private SaveButtonHandler sbHandler;
+
+
+
+    ///// Constructor \\\\\
+    public reefData()
+    {
+        setTitle("Aquarium Data Tracker");
+        setSize(275, 375);
+        setDefaultCloseOperation(EXIT_ON_CLOSE);
+
+        jp = new JPanel();
+        jp.setLayout(new GridLayout(9, 9));
+        jp2 = new JPanel();
+        jp3 = new JPanel();
+
+        ammoniaL = new JLabel("Ammonia:", SwingConstants.RIGHT);
+        nitriteL = new JLabel("Nitrite:", SwingConstants.RIGHT);
+        nitrateL = new JLabel("Nitrate:", SwingConstants.RIGHT);
+        phL = new JLabel("pH:", SwingConstants.RIGHT);
+        tempL = new JLabel("Temperature:", SwingConstants.RIGHT);
+        saltL = new JLabel("Salinity:", SwingConstants.RIGHT);
+        calcL = new JLabel("Calcium:", SwingConstants.RIGHT);
+        phosL = new JLabel("Phosphates:", SwingConstants.RIGHT);
+        
+        
+        //linkL = new JLabel();
+        //linkL.setText("<html><a href=\"\">Learn More</a></html>");
+        
+        
+        ammoniaL.setBorder(new EmptyBorder(0, 0, 0, 30) );
+        nitriteL.setBorder(new EmptyBorder(0, 0, 0, 30) );
+        nitrateL.setBorder(new EmptyBorder(0, 0, 0, 30) );
+        phL.setBorder(new EmptyBorder(0, 0, 0, 30) );
+        tempL.setBorder(new EmptyBorder(0, 0, 0, 30) );
+        saltL.setBorder(new EmptyBorder(0, 0, 0, 30) );
+        calcL.setBorder(new EmptyBorder(0, 0, 0, 30) );
+        phosL.setBorder(new EmptyBorder(0, 0, 0, 30) );
+        
+        ammoniaTF = new JTextField("0");
+        nitriteTF = new JTextField("0");
+        nitrateTF = new JTextField("0");
+        phTF = new JTextField("0");
+        tempTF = new JTextField("0");
+        saltTF = new JTextField("0");
+        calcTF = new JTextField("0");
+        phosTF = new JTextField("0");
+        
+        jp.add(ammoniaL);
+        jp.add(ammoniaTF);
+        add(jp);
+
+        jp.add(nitriteL);
+        jp.add(nitriteTF);
+        add(jp);
+
+        jp.add(nitrateL);
+        jp.add(nitrateTF);
+        add(jp);
+
+        jp.add(phL);
+        jp.add(phTF);
+        add(jp);
+
+        jp.add(tempL);
+        jp.add(tempTF);
+        add(jp);
+
+        jp.add(saltL);
+        jp.add(saltTF);
+        add(jp);
+
+        jp.add(calcL);
+        jp.add(calcTF);
+        add(jp);
+
+        jp.add(phosL);
+        jp.add(phosTF);
+        add(jp);
+
+        // Instantiate and register the Save button for clicks events:
+        saveB = new JButton("Save");
+        jp2.add(saveB);
+        add(jp2, BorderLayout.SOUTH);
+        sbHandler = new SaveButtonHandler();
+        saveB.addActionListener(sbHandler);
+        
+
+        // Instantiate and register the Clear button for clicks events:
+        clearB = new JButton("Clear");
+        jp2.add(clearB);
+        add(jp2, BorderLayout.SOUTH);
+        clearBHandler = new ClearButtonHandler();
+        clearB.addActionListener(clearBHandler);
+
+
+        // Instantiate and register the Exit button for clicks events:
+        exitB = new JButton("Exit");
+        jp2.add(exitB);
+        add(jp2, BorderLayout.SOUTH);
+        ebHandler = new ExitButtonHandler();
+        exitB.addActionListener(ebHandler);
+
+        //jp2.add(linkL, BorderLayout.CENTER);
+
+        setVisible(true);
+        setResizable(false);
+    }
+
+
+
+    // Exit Button Event Handler
+    private class ExitButtonHandler implements ActionListener
+    {
+        public void actionPerformed(ActionEvent e)
+        {
+            System.exit(0);
+        } // end exit button actionPerformed
+    } // end ExitButtonHandler
+
+
+    // Clear Button Event Handler
+    private class ClearButtonHandler implements ActionListener
+    {
+        public void actionPerformed(ActionEvent evt)
+        {
+            ammoniaTF.setText("0");
+            nitriteTF.setText("0");
+            nitrateTF.setText("0");
+            phTF.setText("0");
+            tempTF.setText("0");
+            saltTF.setText("0");
+            calcTF.setText("0");
+            phosTF.setText("0");
+
+        } // end clear button actionPerformed
+    } // end ClearButtonHandler
+    
+
+    // Save Button Event Handler
+    private class SaveButtonHandler implements ActionListener
+    {
+    	
+        public void actionPerformed(ActionEvent evt)
+        {
+        	///Get user input from text fields and convert to string\\\
+        	String ammo = ammoniaTF.getText();
+        	String nitrite = nitriteTF.getText();
+        	String nitrate = nitrateTF.getText();
+        	String ph = phTF.getText();
+        	String salt = saltTF.getText();
+        	String calc = calcTF.getText();
+        	String phos = phosTF.getText();
+        	String temp = tempTF.getText();
+        	
+        	//Check for for valid user input\\
+            if (ammoniaTF.getText().length() < 1 || ammo.matches("[a-zA-Z]+"))
+            {
+            	JOptionPane.showMessageDialog (null, "Invalid input in ammonia field.");
+            }
+            
+            else if (nitriteTF.getText().length() < 1 || nitrite.matches("[a-zA-Z]+"))
+            {
+            	JOptionPane.showMessageDialog (null, "Invalid input in nitrite field.");
+            }
+            
+            else if (nitrateTF.getText().length() < 1 || nitrate.matches("[a-zA-Z]+"))
+            {
+            	JOptionPane.showMessageDialog (null, "Invalid input in nitrate field.");
+            }
+            
+            else if (phTF.getText().length() < 1 || ph.matches("[a-zA-Z]+"))
+            {
+            	JOptionPane.showMessageDialog (null, "Invalid input in pH field.");
+            }
+            
+            else if (tempTF.getText().length() < 1 || salt.matches("[a-zA-Z]+"))
+            {
+            	JOptionPane.showMessageDialog (null, "Invalid input in temperature field.");
+            }
+            
+            else if (saltTF.getText().length() < 1 || calc.matches("[a-zA-Z]+"))
+            {
+            	JOptionPane.showMessageDialog (null, "Invalid input in salinity field.");
+            }
+            else if (calcTF.getText().length() < 1 || phos.matches("[a-zA-Z]+"))
+            {
+            	JOptionPane.showMessageDialog (null, "Invalid input in calcium field.");
+            }
+            
+            else if (phosTF.getText().length() < 1 || temp.matches("[a-zA-Z]+"))
+            {
+            	JOptionPane.showMessageDialog (null, "Invalid input in phosphates field.");
+            }
+            
+            ///Save user input\\\
+            else 
+            {
+            	JFileChooser fc = new JFileChooser();
+            	int returnVal = fc.showSaveDialog(null);
+            	
+            	Date date = Calendar.getInstance().getTime();
+ 	
+	            ///// Code for Save button \\\\\
+	            try 
+	            {
+	            	
+	               File file = fc.getSelectedFile();
+	               
+	               ///// Convert text fields into double \\\\\
+	               double ammoniaIP = Double.parseDouble(ammoniaTF.getText());
+	               double nitriteIP = Double.parseDouble(nitriteTF.getText());
+	               double nitrateIP = Double.parseDouble(nitrateTF.getText());
+	               double phIP = Double.parseDouble(phTF.getText());
+	               double tempIP = Double.parseDouble(tempTF.getText());
+	               double saltIP = Double.parseDouble(saltTF.getText());
+	               double calcIP = Double.parseDouble(calcTF.getText());
+	               double phosIP = Double.parseDouble(phosTF.getText());  
+	               	
+	               ///If file does not exist already\\\
+	               if (!file.exists())
+	               {
+	                    FileWriter fw = new FileWriter(file, true);
+	
+	                    fw.write("\n" + date + "\nAmmonia: " + ammoniaIP + "\nNitrite: " + 
+		                        nitriteIP + "\nNitrate: " + nitrateIP + "\npH: " + phIP + 
+		                        "\nTemperature: " + tempIP + "\nSalinity: " + saltIP + 
+		                        "\nCalcium: " + calcIP + "\nPhosphates: " + phosIP + "\n");
+	                    fw.close();
+	
+	                    JOptionPane.showMessageDialog (null, "File has been created." ); 
+	               }
+	               
+	               ///If file exists already\\\
+	               else
+	               {
+	                    FileWriter fw = new FileWriter(file, true);
+	
+	                    fw.append("\n" + date + "\nAmmonia: " + ammoniaIP + "\nNitrite: " + 
+	                        nitriteIP + "\nNitrate: " + nitrateIP + "\npH: " + phIP + 
+	                        "\nTemperature: " + tempIP + "\nSalinity: " + saltIP + 
+	                        "\nCalcium: " + calcIP + "\nPhosphates: " + phosIP + "\n");
+	                    fw.close();
+	
+	                    JOptionPane.showMessageDialog (null, "Data appended to existing file." );
+	               }               
+	            } 
+	
+	            catch (Exception ex) 
+	            {
+	                JOptionPane.showMessageDialog (null, "User cancelled save.");
+	            }
+            }
+            	
+        } // end clear button actionPerformed
+
+    } // end ClearButtonHandler
+
+    public static void main(String[] args) 
+    {
+        reefData rd = new reefData();    
+    }
+}
